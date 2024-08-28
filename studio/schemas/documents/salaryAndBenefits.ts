@@ -5,6 +5,7 @@ import { title } from "../fields/text";
 import { SalariesInput } from "../../components/SalaryCsvInput/SalariesInput";
 import { benefitId } from "./benefit";
 import MultiLineDescription from "../../components/MultiLineDescription";
+import { officeId } from "./office";
 
 export const salaryAndBenefitsId = "salaryAndBenefits";
 
@@ -30,38 +31,71 @@ const salaryAndBenefits = defineType({
       initialValue: true,
     }),
     defineField({
-      name: "yearlySalaries",
-      title: "Yearly Salaries",
-      description: "Salary tiers for each year",
+      name: "salaries",
+      title: "Salaries",
+      description: "Per-office salaries",
       type: "array",
-      options: {
-        sortable: false,
-      },
       of: [
         {
+          title: "Office Salaries",
+          description: "Yearly salary data for a specific office",
           type: "object",
           fields: [
             defineField({
-              name: "year",
-              title: "Year",
-              type: "number",
-              validation: (Rule) => Rule.required().min(2018),
+              name: "office",
+              title: "Office",
+              type: "reference",
+              to: [{ type: officeId }],
             }),
             defineField({
-              name: "salaries",
-              title: "Salaries",
-              type: "string",
-              components: {
-                input: SalariesInput,
+              name: "yearlySalaries",
+              title: "Yearly Salaries",
+              description: "Salary tiers for each year",
+              type: "array",
+              options: {
+                sortable: false,
               },
+              of: [
+                {
+                  type: "object",
+                  fields: [
+                    defineField({
+                      name: "year",
+                      title: "Year",
+                      type: "number",
+                      validation: (Rule) => Rule.required().min(2018),
+                    }),
+                    defineField({
+                      name: "salaries",
+                      title: "Salaries",
+                      type: "string",
+                      components: {
+                        input: SalariesInput,
+                      },
+                    }),
+                  ],
+                  preview: {
+                    select: {
+                      title: "year",
+                      salaries: "salaries",
+                    },
+                  },
+                },
+              ],
             }),
           ],
           preview: {
             select: {
-              title: "year",
-              salaries: "salaries",
+              office: "office.basicTitle"
             },
-          },
+            prepare({ office }) {
+              console.log(office);
+              return {
+                title: office,
+                subtitle: "Office Salaries",
+              }
+            }
+          }
         },
       ],
     }),

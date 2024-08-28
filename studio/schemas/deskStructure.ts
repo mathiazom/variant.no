@@ -9,12 +9,14 @@ import {
   ProjectsIcon,
   StackCompactIcon,
   HeartIcon,
+  HomeIcon,
 } from "@sanity/icons";
 import { soMeLinksID } from "./documents/socialMediaProfiles";
 import { siteSettingsID } from "./documents/siteSettings";
 import { postId } from "./documents/post";
 import { legalDocumentID } from "./documents/legalDocuments";
 import { salaryAndBenefitsId } from "./documents/salaryAndBenefits";
+import { officeId } from "./documents/office";
 
 export default (S: StructureBuilder) =>
   S.list()
@@ -77,4 +79,8 @@ export default (S: StructureBuilder) =>
             .documentId(salaryAndBenefitsId)
             .title("Salary and Benefits"),
         ),
+      S.listItem()
+        .title("Offices")
+        .icon(HomeIcon)
+        .child(S.documentTypeList(officeId).title("Offices")),
     ]);
