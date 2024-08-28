@@ -2,6 +2,7 @@ import { defineField, defineType } from "sanity";
 import { titleSlug } from "../schemaTypes/slug";
 import seo from "../objects/seo";
 import { title } from "../fields/text";
+import { SalariesInput } from "../../components/SalaryCsvInput/SalariesInput";
 import { benefitId } from "./benefit";
 import MultiLineDescription from "../../components/MultiLineDescription";
 
@@ -27,6 +28,42 @@ const salaryAndBenefits = defineType({
       }),
       type: "boolean",
       initialValue: true,
+    }),
+    defineField({
+      name: "yearlySalaries",
+      title: "Yearly Salaries",
+      description: "Salary tiers for each year",
+      type: "array",
+      options: {
+        sortable: false,
+      },
+      of: [
+        {
+          type: "object",
+          fields: [
+            defineField({
+              name: "year",
+              title: "Year",
+              type: "number",
+              validation: (Rule) => Rule.required().min(2018),
+            }),
+            defineField({
+              name: "salaries",
+              title: "Salaries",
+              type: "string",
+              components: {
+                input: SalariesInput,
+              },
+            }),
+          ],
+          preview: {
+            select: {
+              title: "year",
+              salaries: "salaries",
+            },
+          },
+        },
+      ],
     }),
     defineField({
       name: "benefits",
