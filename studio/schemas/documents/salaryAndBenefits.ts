@@ -3,6 +3,7 @@ import { titleSlug } from "../schemaTypes/slug";
 import seo from "../objects/seo";
 import { title } from "../fields/text";
 import { benefitId } from "./benefit";
+import MultiLineDescription from "../../components/MultiLineDescription";
 
 export const salaryAndBenefitsId = "salaryAndBenefits";
 
@@ -17,7 +18,13 @@ const salaryAndBenefits = defineType({
     defineField({
       name: "showSalaryCalculator",
       title: "Show Salary Calculator",
-      description: "Should the salary calculator be visible on the page?",
+      description: MultiLineDescription({
+        lines: [
+          "Should the salary calculator be visible on the page?",
+          "🇳🇴 Only for Norway",
+        ],
+        style: { paddingBottom: "0.35rem" },
+      }),
       type: "boolean",
       initialValue: true,
     }),
