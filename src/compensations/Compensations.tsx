@@ -12,6 +12,7 @@ import {
   IOption,
   RadioButtonGroup,
 } from "src/components/forms/radioButtonGroup/RadioButtonGroup";
+import YearlyBonuses from "./components/yearlyBonuses/YearlyBonuses";
 
 interface CompensationsProps {
   compensations: CompensationsPage;
@@ -64,6 +65,10 @@ const Compensations = ({ compensations, locations }: CompensationsProps) => {
     label: companyLocation.companyLocationName,
   }));
 
+  const yearlyBonusesForLocation = compensations.bonusesByLocation.find(
+    (b) => b.location._ref === selectedLocation,
+  )?.yearlyBonuses;
+
   return (
     <div className={styles.wrapper}>
       <Text type="h1">{compensations.basicTitle}</Text>
@@ -92,6 +97,9 @@ const Compensations = ({ compensations, locations }: CompensationsProps) => {
             </div>
           ) : null}
         </>
+      )}
+      {yearlyBonusesForLocation && (
+        <YearlyBonuses bonuses={yearlyBonusesForLocation} />
       )}
       <div className={styles.benefits}>
         {compensations.benefitsByLocation.map((benefit) => (
