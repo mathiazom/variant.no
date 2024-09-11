@@ -24,7 +24,7 @@ export const bonusesByLocation = defineField({
           ...location,
           description:
             "Select the company location for which you are entering the average bonus information. Each location must be unique.",
-          validation: (Rule) => Rule.required(),
+          validation: (rule) => rule.required(),
         },
         defineField({
           name: "averageBonus",
@@ -32,8 +32,9 @@ export const bonusesByLocation = defineField({
           description:
             "Enter the average bonus amount for this location. Ensure the amount is positive and reflective of the compensation package for this location.",
           type: "number",
-          validation: (Rule) =>
-            Rule.required()
+          validation: (rule) =>
+            rule
+              .required()
               .min(0)
               .error("Please enter a positive bonus amount."),
         }),
@@ -52,8 +53,8 @@ export const bonusesByLocation = defineField({
       },
     }),
   ],
-  validation: (Rule) =>
-    Rule.custom((bonusesByLocation) => {
+  validation: (rule) =>
+    rule.custom((bonusesByLocation) => {
       const isNotDuplicate: boolean = checkForDuplicateLocations(
         bonusesByLocation as DocumentWithLocation[] | undefined,
       );

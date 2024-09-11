@@ -21,7 +21,7 @@ export const benefitsByLocation = defineField({
           ...location,
           description:
             "Select the office location for which you are entering benefits information. Each location must be unique.",
-          validation: (Rule) => Rule.required(),
+          validation: (rule) => rule.required(),
         },
         defineField({
           name: "benefitsGroup",
@@ -47,8 +47,8 @@ export const benefitsByLocation = defineField({
       },
     },
   ],
-  validation: (Rule) =>
-    Rule.custom((benefitsByLocation) => {
+  validation: (rule) =>
+    rule.custom((benefitsByLocation) => {
       const isNotDuplicate: boolean = checkForDuplicateLocations(
         benefitsByLocation as DocumentWithLocation[] | undefined,
       );

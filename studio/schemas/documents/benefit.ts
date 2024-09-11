@@ -24,7 +24,7 @@ const benefitType = defineField({
     layout: BENEFIT_TYPES.length > 5 ? "dropdown" : "radio",
   },
   initialValue: BENEFIT_TYPE_BASIC_VALUE,
-  validation: (Rule) => Rule.required(),
+  validation: (rule) => rule.required(),
 });
 
 const benefit = defineType({
