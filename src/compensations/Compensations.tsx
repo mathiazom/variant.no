@@ -5,8 +5,14 @@ import { CompensationsPage } from "studio/lib/payloads/compensations";
 import SalaryCalculator, {
   Degree,
 } from "./components/salaryCalculator/SalaryCalculator";
-import { useState } from "react";
-import { calculatePension, calculateSalary } from "./utils/calculateSalary";
+import { useMemo, useState } from "react";
+import {
+  calculatePension,
+  calculateSalary,
+  maxSalariesExaminationYear,
+  minSalariesExaminationYear,
+  salariesFromLocation,
+} from "./utils/salary";
 import { CompanyLocation } from "studio/lib/payloads/companyDetails";
 import {
   IOption,
@@ -34,6 +40,16 @@ const Compensations = ({ compensations, locations }: CompensationsProps) => {
     selectedDegree: "bachelor",
   });
 
+  const currentYearSalariesResult = useMemo(
+    () =>
+      salariesFromLocation(
+        currentYear,
+        selectedLocation,
+        compensations.salaries,
+      ),
+    [currentYear, selectedLocation, compensations.salaries],
+  );
+
   const updateSelectedDegree = (newDegree: Degree) => {
     setFormState((prevState) => ({
       ...prevState,
@@ -50,13 +66,14 @@ const Compensations = ({ compensations, locations }: CompensationsProps) => {
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    setSalary(
-      calculateSalary(
-        currentYear,
-        formState.examinationYear,
-        formState.selectedDegree,
-      ),
+    if (!currentYearSalariesResult.ok) return;
+    const salary = calculateSalary(
+      formState.examinationYear,
+      formState.selectedDegree,
+      currentYearSalariesResult.value,
     );
+    if (salary === undefined) return;
+    setSalary(salary);
   };
 
   const locationOptions: IOption[] = locations.map((companyLocation) => ({
@@ -74,10 +91,16 @@ const Compensations = ({ compensations, locations }: CompensationsProps) => {
         selectedId={selectedLocation}
         onValueChange={(option) => setSelectedLocation(option.id)}
       />
-      {compensations.showSalaryCalculator && (
+      {compensations.showSalaryCalculator && currentYearSalariesResult.ok && (
         <>
           <SalaryCalculator
             examinationYearValue={formState.examinationYear}
+            minExaminationYear={minSalariesExaminationYear(
+              currentYearSalariesResult.value,
+            )}
+            maxExaminationYear={
+              maxSalariesExaminationYear(currentYearSalariesResult.value) - 1
+            }
             selectedDegree={formState.selectedDegree}
             onDegreeChanged={updateSelectedDegree}
             onExaminationYearChanged={updateExaminationYear}
